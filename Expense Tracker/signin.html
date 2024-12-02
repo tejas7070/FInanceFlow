@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <style>
+        body {
+            background: url(./bg.png);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #eaeaea;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            background-color: rgba(26, 25, 25, 0.7);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(13px);
+            box-sizing: border-box;
+            margin: auto;
+            border: 3px solid gold;
+        }
+
+        h2 {
+            background-image: linear-gradient(rgb(233, 195, 8), rgb(255, 255, 255));
+            color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 5px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            background-color: #f0f0f0;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-image: linear-gradient(rgb(38, 4, 86), rgb(90, 61, 110));
+            color: transparent;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #5f0273;
+        }
+
+        .link {
+            text-align: center;
+            margin-top: 10px;
+            color: #f0f0f0;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        /* Responsive design for small screens */
+        @media (max-width: 600px) {
+            .container {
+                margin: 20px;
+                padding: 15px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            input[type="email"], input[type="password"], button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Sign In</h2>
+    <input type="email" id="email" placeholder="Enter your email" required>
+    <input type="password" id="password" placeholder="Enter your password" required>
+    <button id="signInBtn">Sign In</button>
+    <p class="link">Don't have an account? <a href="signup.html" style="color: goldenrod;">Sign Up</a></p>
+    <div id="error-message" class="error"></div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyC2uV0cMV2WLBLBOvI19p4u6zgVqUlQAPU",
+        authDomain: "financeflow7007.firebaseapp.com",
+        databaseURL: "https://financeflow7007-default-rtdb.firebaseio.com/",
+        projectId: "financeflow7007",
+        storageBucket: "financeflow7007.firebasestorage.app",
+        messagingSenderId: "972734177999",
+        appId: "1:972734177999:web:cdc5d36aa6f519bc108dba",
+        measurementId: "G-NDDXGQ04V9"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    document.getElementById("signInBtn").addEventListener("click", function () {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const errorMessage = document.getElementById("error-message");
+
+        // Clear any previous error message
+        errorMessage.textContent = "";
+
+        // Basic validation
+        if (email === "" || password === "") {
+            errorMessage.textContent = "Please fill in all fields.";
+            return;
+        }
+
+        // Firebase sign in
+        auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                console.log("User signed in:", userCredential.user);
+                window.location.href = "index.html";
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessageText = error.message;
+                if (errorCode === 'auth/wrong-password') {
+                    errorMessage.textContent = "Incorrect password.";
+                } else if (errorCode === 'auth/user-not-found') {
+                    errorMessage.textContent = "No user found with this email.";
+                } else if (errorCode === 'auth/invalid-email') {
+                    errorMessage.textContent = "Please enter a valid email address.";
+                } else {
+                    errorMessage.textContent = errorMessageText;
+                }
+                console.error("Error signing in:", errorMessageText);
+            });
+    });
+</script>
+
+</body>
+</html>
